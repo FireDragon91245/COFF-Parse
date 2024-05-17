@@ -62,7 +62,7 @@ class COFFSection:
         if not self.is_long_name:
             return
 
-        start = header.pointer_to_symbol_table - base_offset + (header.number_of_symbols * COFFSymbolEntry.SIZE) + self.str_table_offset
+        start = header._pointer_to_symbol_table - base_offset + (header._number_of_symbols * COFFSymbolEntry.SIZE) + self.str_table_offset
         self.name = ''
         while chr(coff_data[start]) != '\0':
             self.name += chr(coff_data[start])

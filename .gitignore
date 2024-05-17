@@ -1,0 +1,4 @@
+.venv
+*.o
+*.obj
+*.exe

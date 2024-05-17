@@ -28,7 +28,7 @@ class COFFSymbolEntry:
         if self.string_table_offset - base_offset > len(coff_data):
             return
 
-        start = header.pointer_to_symbol_table - base_offset + (header.number_of_symbols * COFFSymbolEntry.SIZE) + self.string_table_offset
+        start = header._pointer_to_symbol_table - base_offset + (header._number_of_symbols * COFFSymbolEntry.SIZE) + self.string_table_offset
         self.name = ''
         while chr(coff_data[start]) != '\0':
             self.name += chr(coff_data[start])

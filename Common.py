@@ -17,3 +17,7 @@ def bytes_to_str(byte_array):
 
 def format_byte_array(bytes):
     return ' '.join([f'0x{byte:02X}' for byte in bytes])
+
+
+def get_indian_string(is_little_endian: bool) -> str:
+    return "little" if is_little_endian else "big"

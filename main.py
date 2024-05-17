@@ -34,30 +34,30 @@ with open(coff_file, 'rb') as f:
     print("COFF Header")
     print(header)
     coff_data = coff_data[20:]
-    if header.size_of_optional_header != 0:
+    if header._size_of_optional_header != 0:
         optional_header = COFFExtendedHeader(litle_endian, coff_data[0:27])
         print("COFF Extended Header")
         print(optional_header)
         coff_data = coff_data[28:]
 
     sections = []
-    for i in range(header.number_of_sections):
+    for i in range(header._number_of_sections):
         sections.append(COFFSection(litle_endian, coff_data[0:39]))
         coff_data = coff_data[40:]
 
-    base_offset = COFFHeader.SIZE + (COFFExtendedHeader.SIZE if header.size_of_optional_header != 0 else 0) + header.number_of_sections * COFFSection.SIZE
+    base_offset = COFFHeader.SIZE + (COFFExtendedHeader.SIZE if header._size_of_optional_header != 0 else 0) + header._number_of_sections * COFFSection.SIZE
 
-    for i in range(header.number_of_sections):
+    for i in range(header._number_of_sections):
         sections[i].load_long_name(base_offset, coff_data, header)
         print(f"Section {i + 1}")
         print(sections[i])
 
-    for i in range(header.number_of_sections):
+    for i in range(header._number_of_sections):
         section_data = sections[i].get_data(base_offset, coff_data)
         print(f"Section {i+1} Data ({sections[i].name}) (Size: {sections[i].size} bytes)")
         print(format_byte_array(section_data))
 
-    for i in range(header.number_of_sections):
+    for i in range(header._number_of_sections):
         sections[i].load_relocation_data(base_offset, coff_data)
         relocation_data = sections[i].get_relocation_data()
         print(f"Section {i+1} Relocations")
@@ -65,8 +65,8 @@ with open(coff_file, 'rb') as f:
             print(f"Relocation {j+1} in for Section {i+1} ({sections[i].name})")
             print(relocation)
 
-    for i in range(header.number_of_symbols):
-        symbol = COFFSymbolEntry(litle_endian, coff_data[(header.pointer_to_symbol_table - base_offset) + COFFSymbolEntry.SIZE * i:(header.pointer_to_symbol_table - base_offset) + COFFSymbolEntry.SIZE * (i + 1)])
+    for i in range(header._number_of_symbols):
+        symbol = COFFSymbolEntry(litle_endian, coff_data[(header._pointer_to_symbol_table - base_offset) + COFFSymbolEntry.SIZE * i:(header._pointer_to_symbol_table - base_offset) + COFFSymbolEntry.SIZE * (i + 1)])
         symbol.load_long_name(base_offset, coff_data, header)
         print(f"Symbol {i+1}")
         print(symbol)

@@ -1,5 +1,3 @@
-from Common import bytes_to_int
-
 class COFFStringTable:
 
     def __init__(self, little_endian: bool, blen: int, strings: list[str] = None, bdata: bytes | None = None):
@@ -16,7 +14,7 @@ class COFFStringTable:
 
     @staticmethod
     def from_strings(endian: bool, strings: list[str]):
-        return COFFStringTable(0, strings)._recalc_blen()
+        return COFFStringTable(endian, 0, strings)
 
     def _recalc_blen(self):
         self._blen_current = True
@@ -45,5 +43,27 @@ class COFFStringTable:
             self._recalc_bdata()
         return self._bdata
 
+    def add_string(self, string: str) -> int:
+        if self._strings is None:
+            self._strings = []
+        self._strings.append(string)
+        self._blen_current = False
+        self._bdata_current = False
+        return self.get_string_offset(string)
+
+    def contains_string(self, string: str):
+        return string in self._strings
+
+    def get_string_offset(self, string: str):
+        if string not in self._strings:
+            return -1
+        offset = 4
+        for s in self._strings:
+            if s == string:
+                return offset
+            offset += len(s) + 1
+        return -1
+
     byte_len = property(_get_blen)
     strings = property(_get_strings)
+    byte_data = property(_get_bdata)
